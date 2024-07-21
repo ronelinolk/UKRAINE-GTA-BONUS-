@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ваша виногорода!</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(to right, #1e3c72, #2a5298);
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #f5f5f5;
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+
+        .reward-image {
+            margin: 20px 0;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .form-group {
+            margin: 15px 0;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 18px;
+        }
+
+        .form-group select,
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            box-sizing: border-box;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .submit-button {
+            padding: 10px 20px;
+            background-color: #27ae60;
+            color: white;
+            font-size: 18px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .submit-button:hover {
+            background-color: #2ecc71;
+            transform: scale(1.05);
+        }
+
+        .submit-button:active {
+            transform: scale(0.95);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #34495e;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            animation: fadeIn 0.5s;
+        }
+
+        .modal h1 {
+            margin: 0;
+            font-size: 24px;
+            color: #ecf0f1;
+        }
+
+        .modal p {
+            margin: 10px 0;
+            font-size: 16px;
+            color: #bdc3c7;
+        }
+
+        .close-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #27ae60;
+            color: white;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .close-button:hover {
+            background-color: #2ecc71;
+            transform: scale(1.05);
+        }
+
+        .close-button:active {
+            transform: scale(0.95);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+    </style>
+    <script>
+        function getRandomReward() {
+            const images = [
+                { src: "01.png", chance: 0.4 },
+                { src: "02.png", chance: 0.2 },
+                { src: "03.png", chance: 0.5 },
+                { src: "04.png", chance: 0.5 },
+                { src: "05.png", chance: 0.5 },
+                { src: "06.png", chance: 0.5 },
+                { src: "07.png", chance: 0.4 },
+                { src: "08.png", chance: 0.6 },
+                { src: "09.png", chance: 0.3 },
+                { src: "10.png", chance: 0.3 }
+            ];
+
+            let totalChance = 0;
+            images.forEach(img => totalChance += img.chance);
+
+            let random = Math.random() * totalChance;
+            let selectedImage;
+
+            for (let img of images) {
+                if (random < img.chance) {
+                    selectedImage = img.src;
+                    break;
+                }
+                random -= img.chance;
+            }
+
+            return selectedImage;
+        }
+
+        function submitForm() {
+            const server = document.getElementById('server').value;
+            const nickname = document.getElementById('nickname').value;
+
+            const validNicknames = [
+                "Віталік Мотало", 
+                "Роман Літинський", 
+                "Бобер Михайлович"
+            ];
+
+            if (nickname === '') {
+                showAlert('Будь ласка, введіть свій нікнейм.');
+                return;
+            }
+
+            if (!validNicknames.includes(nickname)) {
+                showAlert(`${nickname} не вірний для ${server}`);
+                return;
+            }
+
+            const message = `Винагорода буде надішлена на ${server} на нікнейм ${nickname} до 24 годин!`;
+            showAlert(message, 'success');
+        }
+
+        function showAlert(message, type = 'error') {
+            const modal = document.querySelector('.modal');
+            modal.querySelector('h1').innerText = type === 'error' ? 'Помилка' : 'Успіх';
+            modal.querySelector('p').innerText = message;
+            modal.style.display = 'block';
+        }
+
+        function closeModal() {
+            const modal = document.querySelector('.modal');
+            modal.style.display = 'none';
+            if (modal.querySelector('h1').innerText === 'Успіх') {
+                window.location.href = '03.html';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const selectedImage = getRandomReward();
+            document.getElementById('reward-image').src = selectedImage;
+        });
+    </script>
+</head>
+<body>
+    <h1>Ваша виногорода!</h1>
+    <img id="reward-image" class="reward-image" alt="Reward">
+
+    <div class="form-group">
+        <label for="server">Оберіть ваш сервер:</label>
+        <select id="server">
+            <option value="01 сервер">01 сервер</option>
+            <option value="02 сервер">02 сервер</option>
+            <option value="03 сервер">03 сервер</option>
+            <option value="04 сервер">04 сервер</option>
+            <option value="05 сервер">05 сервер</option>
+            <option value="06 сервер">06 сервер</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="nickname">Введіть ваш нікнейм:</label>
+        <input type="text" id="nickname" placeholder="Ваш нікнейм">
+    </div>
+
+    <button class="submit-button" onclick="submitForm()">Відправити</button>
+
+    <div class="modal">
+        <h1>Помилка</h1>
+        <p></p>
+        <button class="close-button" onclick="closeModal()">Добре</button>
+    </div>
+</body>
+</html>
